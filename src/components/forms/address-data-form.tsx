@@ -105,7 +105,7 @@ export const AddressDataForm = () => {
   }, [form.watch('cep')])
 
   return (
-    <Card className="">
+    <Card className="w-full">
       <CardHeader>
         <CardTitle>Informe o seu endereço</CardTitle>
         <CardDescription>Preencha todos os campos obrigatórios</CardDescription>

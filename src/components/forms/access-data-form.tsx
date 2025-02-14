@@ -90,7 +90,7 @@ export const AccessDataForm = () => {
   }
 
   return (
-    <Card className="">
+    <Card className="w-full">
       <CardHeader>
         <CardTitle>Informe os dados de acesso</CardTitle>
         <CardDescription>Preencha todos os campos obrigatórios</CardDescription>

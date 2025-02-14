@@ -79,7 +79,7 @@ export const PersonalDataForm = () => {
   }, [form.watch('phone')])
 
   return (
-    <Card className="">
+    <Card className="w-full">
       <CardHeader>
         <CardTitle>Informe os dados pessoais</CardTitle>
         <CardDescription>Preencha todos os campos obrigatórios</CardDescription>
