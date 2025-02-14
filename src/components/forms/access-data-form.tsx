@@ -27,12 +27,11 @@ import { toast } from "@/hooks/use-toast"
 
 const formSchema = z
   .object({
-    email: z.string().email({ message: "E-mail inválido" }).nonempty("Campo obrigatório"),
-    confirmEmail: z.string().email({ message: "E-mail inválido" }).nonempty("Campo obrigatório"),
+    email: z.string({ required_error: 'Campo Obrigatório' }).email({ message: "E-mail inválido" }),
+    confirmEmail: z.string({ required_error: 'Campo Obrigatório' }).email({ message: "E-mail inválido" }),
     password: z
-      .string()
+      .string({ required_error: 'Campo Obrigatório' })
       .min(8, { message: "Mínimo de 8 caracteres" })
-      .nonempty("Campo obrigatório")
       .refine((value) => /[A-Z]/.test(value), {
         message: "A senha deve conter pelo menos uma letra maiúscula",
       })
@@ -45,7 +44,7 @@ const formSchema = z
       .refine((value) => /[!@#$%^&*(),.?":{}|<>]/.test(value), {
         message: "A senha deve conter pelo menos um caractere especial",
       }),
-    confirmPassword: z.string().min(8, { message: "Mínimo de 8 caracteres" }).nonempty("Campo obrigatório"),
+    confirmPassword: z.string({ required_error: 'Campo Obrigatório' }).min(8, { message: "Mínimo de 8 caracteres" }),
   })
   .superRefine(({ confirmPassword, password, email, confirmEmail }, ctx) => {
     if (confirmPassword !== password) {
