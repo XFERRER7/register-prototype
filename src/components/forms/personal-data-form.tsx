@@ -24,12 +24,19 @@ import {
 import { useEffect } from "react";
 import { masks } from "@/utils/masks"
 import { cpf as cpfValidator } from 'cpf-cnpj-validator'
+import { toast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
-  fullName: z.string({ required_error: 'Nome completo é obrigatório' }).min(3, 'Nome completo deve ter no mínimo 3 caracteres'),
-  cpf: z.string({ required_error: 'CPF é obrigatório' }),
+  fullName: z
+    .string({ required_error: 'Nome completo é obrigatório' })
+    .min(3, 'Nome completo deve ter no mínimo 3 caracteres'),
+  cpf: z
+    .string({ required_error: 'CPF é obrigatório' })
+    .refine((value) => cpfValidator.isValid(value), {
+      message: 'CPF inválido',
+    }),
   phone: z.string({ required_error: 'Telefone é obrigatório' }),
-})
+});
 
 type TFormSchemaType = z.infer<typeof formSchema>
 
@@ -39,7 +46,17 @@ export const PersonalDataForm = () => {
     resolver: zodResolver(formSchema),
   })
 
-  async function onSubmit(values: TFormSchemaType) { }
+  async function onSubmit(data: TFormSchemaType) {
+
+    toast({
+      title: "Você enviou os seguintes dados",
+      description: (
+        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+        </pre>
+      ),
+    })
+   }
 
   useEffect(() => {
 
@@ -47,17 +64,6 @@ export const PersonalDataForm = () => {
 
     if (cpf) {
       form.setValue('cpf', masks.cpf(cpf).masked)
-    }
-
-    if (cpf?.length === 14) {
-      if (!cpfValidator.isValid(cpf)) {
-        form.setError('cpf', {
-          type: 'manual',
-          message: 'CPF inválido'
-        })
-      } else {
-        form.clearErrors('cpf')
-      }
     }
 
   }, [form.watch('cpf')])

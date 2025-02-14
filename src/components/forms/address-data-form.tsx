@@ -39,6 +39,7 @@ import {
   CommandList,
 } from "@/components/ui/command"
 import { brStates } from "@/utils/br-states"
+import { toast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
   cep: z.string({ required_error: 'CEP é obrigatório' }).min(9, 'CEP inválido'),
@@ -57,8 +58,15 @@ export const AddressDataForm = () => {
     resolver: zodResolver(formSchema),
   })
 
-  async function onSubmit(values: TFormSchemaType) {
-    console.log(values);
+  async function onSubmit(data: TFormSchemaType) {
+    toast({
+      title: "Você enviou os seguintes dados",
+      description: (
+        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+        </pre>
+      ),
+    })
   }
 
   async function getAddressByCEP(cep: string) {

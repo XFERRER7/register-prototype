@@ -23,6 +23,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { useState } from "react"
+import { toast } from "@/hooks/use-toast"
 
 const formSchema = z
   .object({
@@ -75,7 +76,18 @@ export const AccessDataForm = () => {
     resolver: zodResolver(formSchema),
   })
 
-  async function onSubmit(values: TFormSchemaType) { }
+  async function onSubmit(data: TFormSchemaType) {
+
+    toast({
+      title: "Você enviou os seguintes dados",
+      description: (
+        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+        </pre>
+      ),
+    })
+
+  }
 
   return (
     <Card className="">
@@ -138,9 +150,9 @@ export const AccessDataForm = () => {
                           {...field} />
                         {
                           isShowingPassword
-                            ? <Eye className="absolute right-2 top-2 cursor-pointer" onClick={() => setIsShowingPassword(false)} size={21}/>
+                            ? <Eye className="absolute right-2 top-2 cursor-pointer" onClick={() => setIsShowingPassword(false)} size={21} />
                             :
-                            <EyeOff className="absolute right-2 top-2 cursor-pointer" onClick={() => setIsShowingPassword(true)} size={21}/>
+                            <EyeOff className="absolute right-2 top-2 cursor-pointer" onClick={() => setIsShowingPassword(true)} size={21} />
                         }
                       </div>
                     </FormControl>
@@ -163,9 +175,9 @@ export const AccessDataForm = () => {
                           {...field} />
                         {
                           isShowingConfirmPassword
-                            ? <Eye className="absolute right-2 top-2 cursor-pointer" onClick={() => setIsShowingConfirmPassword(false)} size={21}/>
+                            ? <Eye className="absolute right-2 top-2 cursor-pointer" onClick={() => setIsShowingConfirmPassword(false)} size={21} />
                             :
-                            <EyeOff className="absolute right-2 top-2 cursor-pointer" onClick={() => setIsShowingConfirmPassword(true)} size={21}/>
+                            <EyeOff className="absolute right-2 top-2 cursor-pointer" onClick={() => setIsShowingConfirmPassword(true)} size={21} />
                         }
                       </div>
                     </FormControl>
