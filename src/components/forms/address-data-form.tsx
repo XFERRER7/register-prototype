@@ -186,7 +186,7 @@ export const AddressDataForm = () => {
                 name="state"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Language</FormLabel>
+                    <FormLabel>Estado</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
@@ -209,9 +209,9 @@ export const AddressDataForm = () => {
                       </PopoverTrigger>
                       <PopoverContent className="w-[200px] p-0">
                         <Command>
-                          <CommandInput placeholder="Search language..." />
+                          <CommandInput placeholder="Procure um estado..." />
                           <CommandList>
-                            <CommandEmpty>No language found.</CommandEmpty>
+                            <CommandEmpty>Nenhum estado encontrado.</CommandEmpty>
                             <CommandGroup>
                               {brStates.map((state) => (
                                 <CommandItem
