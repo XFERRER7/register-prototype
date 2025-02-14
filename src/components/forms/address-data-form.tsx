@@ -105,7 +105,7 @@ export const AddressDataForm = () => {
   }, [form.watch('cep')])
 
   return (
-    <Card className="w-full">
+    <Card className="w-full lg:w-[30rem]">
       <CardHeader>
         <CardTitle>Informe o seu endereço</CardTitle>
         <CardDescription>Preencha todos os campos obrigatórios</CardDescription>
@@ -113,7 +113,7 @@ export const AddressDataForm = () => {
       <CardContent>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="lg:w-[30rem] w-full flex flex-col gap-5 items-center justify-center">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="w-full flex flex-col gap-5 items-center justify-center">
             <div className="grid grid-cols-1 gap-4 w-full h-full">
 
               <FormField

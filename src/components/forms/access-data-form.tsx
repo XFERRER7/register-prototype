@@ -89,7 +89,7 @@ export const AccessDataForm = () => {
   }
 
   return (
-    <Card className="w-full">
+    <Card className="w-full lg:w-[30rem]">
       <CardHeader>
         <CardTitle>Informe os dados de acesso</CardTitle>
         <CardDescription>Preencha todos os campos obrigatórios</CardDescription>
@@ -97,7 +97,7 @@ export const AccessDataForm = () => {
       <CardContent>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="lg:w-[30rem] w-full flex flex-col gap-5 items-center justify-center">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="w-full flex flex-col gap-5 items-center justify-center">
             <div className="grid grid-cols-1 gap-4 w-full h-full">
 
               <FormField
