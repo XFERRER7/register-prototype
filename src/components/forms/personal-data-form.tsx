@@ -23,40 +23,51 @@ import {
 } from "@/components/ui/card"
 import { useEffect } from "react";
 import { masks } from "@/utils/masks"
-import { cpf as cpfValidator } from 'cpf-cnpj-validator'
-import { toast } from "@/hooks/use-toast";
+import { registerSchema } from "@/utils/schema";
+import { useRouter } from "next/navigation";
+import { useRegisterStore } from "@/store";
 
-const formSchema = z.object({
-  fullName: z
-    .string({ required_error: 'Nome completo é obrigatório' })
-    .min(3, 'Nome completo deve ter no mínimo 3 caracteres'),
-  cpf: z
-    .string({ required_error: 'CPF é obrigatório' })
-    .refine((value) => cpfValidator.isValid(value), {
-      message: 'CPF inválido',
-    }),
-  phone: z.string({ required_error: 'Telefone é obrigatório' }),
-});
+const formSchema = registerSchema.pick({
+  cpf: true,
+  fullName: true,
+  phone: true
+})
 
 type TFormSchemaType = z.infer<typeof formSchema>
 
 export const PersonalDataForm = () => {
 
+  const router = useRouter();
+
+  const setData = useRegisterStore((state) => state.setData);
+
+  const {
+    cpf,
+    fullName,
+    phone,
+  } = useRegisterStore(state => state)
+
   const form = useForm<TFormSchemaType>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(formSchema)
   })
 
   async function onSubmit(data: TFormSchemaType) {
 
-    toast({
-      title: "Você enviou os seguintes dados",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    })
-   }
+    setData(data);
+    router.push("/address-data");
+
+  }
+
+  useEffect(() => {
+    if (!useRegisterStore.persist.hasHydrated) return;
+
+    if (fullName && cpf && phone) {
+      form.setValue('fullName', fullName)
+      form.setValue('cpf', cpf)
+      form.setValue('phone', phone)
+    }
+
+  }, [useRegisterStore.persist.hasHydrated, fullName, cpf, phone, router])
 
   useEffect(() => {
 

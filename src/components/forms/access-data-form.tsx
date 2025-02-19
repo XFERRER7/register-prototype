@@ -22,47 +22,34 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "@/hooks/use-toast"
+import { registerSchema } from "@/utils/schema"
+import { useRegisterStore } from "@/store"
+import { useRouter } from "next/navigation"
 
-const formSchema = z
-  .object({
-    email: z.string({ required_error: 'Campo Obrigatório' }).email({ message: "E-mail inválido" }),
-    confirmEmail: z.string({ required_error: 'Campo Obrigatório' }).email({ message: "E-mail inválido" }),
-    password: z
-      .string({ required_error: 'Campo Obrigatório' })
-      .min(8, { message: "Mínimo de 8 caracteres" })
-      .refine((value) => /[A-Z]/.test(value), {
-        message: "A senha deve conter pelo menos uma letra maiúscula",
-      })
-      .refine((value) => /[a-z]/.test(value), {
-        message: "A senha deve conter pelo menos uma letra minúscula",
-      })
-      .refine((value) => /\d/.test(value), {
-        message: "A senha deve conter pelo menos um número",
-      })
-      .refine((value) => /[!@#$%^&*(),.?":{}|<>]/.test(value), {
-        message: "A senha deve conter pelo menos um caractere especial",
-      }),
-    confirmPassword: z.string({ required_error: 'Campo Obrigatório' }).min(8, { message: "Mínimo de 8 caracteres" }),
-  })
-  .superRefine(({ confirmPassword, password, email, confirmEmail }, ctx) => {
-    if (confirmPassword !== password) {
-      ctx.addIssue({
-        code: "custom",
-        message: "As senhas não coincidem",
-        path: ['confirmPassword'],
-      });
-    }
+const formSchema = registerSchema.pick({
+  email: true,
+  confirmEmail: true,
+  password: true,
+  confirmPassword: true,
+}).superRefine(({ confirmPassword, password, email, confirmEmail }, ctx) => {
+  if (confirmPassword !== password) {
+    ctx.addIssue({
+      code: "custom",
+      message: "As senhas não coincidem",
+      path: ['confirmPassword'],
+    });
+  }
 
-    if (confirmEmail !== email) {
-      ctx.addIssue({
-        code: "custom",
-        message: "Os e-mails não coincidem",
-        path: ['confirmEmail'],
-      });
-    }
-  });
+  if (confirmEmail !== email) {
+    ctx.addIssue({
+      code: "custom",
+      message: "Os e-mails não coincidem",
+      path: ['confirmEmail'],
+    });
+  }
+});
 
 type TFormSchemaType = z.infer<typeof formSchema>
 
@@ -71,22 +58,72 @@ export const AccessDataForm = () => {
   const [isShowingPassword, setIsShowingPassword] = useState(false)
   const [isShowingConfirmPassword, setIsShowingConfirmPassword] = useState(false)
 
+  const setData = useRegisterStore(state => state.setData)
+  const {
+    cep,
+    city,
+    complement,
+    confirmEmail,
+    confirmPassword,
+    cpf,
+    email,
+    fullName,
+    number,
+    password,
+    phone,
+    state,
+    street
+  } = useRegisterStore(state => state)
+
+  const router = useRouter()
+
   const form = useForm<TFormSchemaType>({
     resolver: zodResolver(formSchema),
   })
 
   async function onSubmit(data: TFormSchemaType) {
 
+    setData(data);
+
+    const body = {
+      cep,
+      city,
+      complement,
+      confirmEmail: data.confirmEmail,
+      confirmPassword: data.confirmPassword,
+      cpf,
+      email: data.email,
+      fullName,
+      number,
+      password: data.password,
+      phone,
+      state,
+      street
+    }
+
     toast({
       title: "Você enviou os seguintes dados",
       description: (
         <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+          <code className="text-white">{JSON.stringify(body, null, 2)}</code>
         </pre>
       ),
     })
 
   }
+
+  useEffect(() => {
+    if (!useRegisterStore.persist.hasHydrated) return;
+
+    if (!fullName || !cpf || !phone) {
+      router.push("/personal-data");
+    }
+    
+    if(!cep || !street || !number || !city || !state) {
+      router.push("/address-data");
+    }
+
+  }, [useRegisterStore.persist.hasHydrated, fullName, cpf, phone, cep, street, number, city, state])
 
   return (
     <Card className="w-full lg:w-[30rem]">

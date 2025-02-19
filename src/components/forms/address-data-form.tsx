@@ -40,33 +40,49 @@ import {
 } from "@/components/ui/command"
 import { brStates } from "@/utils/br-states"
 import { toast } from "@/hooks/use-toast";
+import { registerSchema } from "@/utils/schema";
+import { useRouter } from "next/navigation";
+import { useRegisterStore } from "@/store";
 
-const formSchema = z.object({
-  cep: z.string({ required_error: 'CEP é obrigatório' }).min(9, 'CEP inválido'),
-  street: z.string({ required_error: 'Rua é obrigatório' }).min(3, 'Rua inválida'),
-  number: z.string({ required_error: 'Número é obrigatório' }).min(1, 'Número inválido'),
-  complement: z.string({ required_error: 'Complemento é obrigatório' }).min(3, 'Complemento inválido'),
-  state: z.string({ required_error: 'Estado é obrigatório' }).min(2, 'Estado inválido'),
-  city: z.string({ required_error: 'Cidade é obrigatório' }).min(3, 'Cidade inválida'),
+const formSchema = registerSchema.pick({
+  cep: true,
+  street: true,
+  number: true,
+  complement: true,
+  state: true,
+  city: true,
 })
 
 type TFormSchemaType = z.infer<typeof formSchema>
 
 export const AddressDataForm = () => {
 
+  const router = useRouter();
+
+  const setData = useRegisterStore((state) => state.setData);
+  const {
+    cep,
+    city,
+    complement,
+    confirmEmail,
+    confirmPassword,
+    cpf,
+    email,
+    fullName,
+    number,
+    password,
+    phone,
+    state,
+    street
+  } = useRegisterStore(state => state)
+
   const form = useForm<TFormSchemaType>({
     resolver: zodResolver(formSchema),
   })
 
   async function onSubmit(data: TFormSchemaType) {
-    toast({
-      title: "Você enviou os seguintes dados",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    })
+    setData(data);
+    router.push("/access-data");
   }
 
   async function getAddressByCEP(cep: string) {
@@ -103,6 +119,30 @@ export const AddressDataForm = () => {
     }
 
   }, [form.watch('cep')])
+
+
+  useEffect(() => {
+    if (!useRegisterStore.persist.hasHydrated) return;
+
+    if (cep && street && number && state && city && complement) {
+      form.setValue('cep', cep)
+      form.setValue('street', street)
+      form.setValue('number', number)
+      form.setValue('complement', complement)
+      form.setValue('state', state)
+      form.setValue('city', city)
+    }
+
+  }, [useRegisterStore.persist.hasHydrated, cep, street, number, complement, state, city, router])
+
+  useEffect(() => {
+    if (!useRegisterStore.persist.hasHydrated) return;
+
+    if (!fullName || !cpf || !phone) {
+      router.push("/personal-data");
+    }
+    
+  }, [useRegisterStore.persist.hasHydrated, fullName, cpf, phone, router])
 
   return (
     <Card className="w-full lg:w-[30rem]">
