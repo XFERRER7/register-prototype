@@ -115,7 +115,7 @@ export const AddressDataForm = () => {
     }
 
     if (cep?.length === 9) {
-      getAddressByCEP(masks.postalCode(cep).original)
+      // getAddressByCEP(masks.postalCode(cep).original)
     }
 
   }, [form.watch('cep')])

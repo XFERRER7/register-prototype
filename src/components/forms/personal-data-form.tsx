@@ -26,6 +26,7 @@ import { masks } from "@/utils/masks"
 import { registerSchema } from "@/utils/schema";
 import { useRouter } from "next/navigation";
 import { useRegisterStore } from "@/store";
+import Stepper from "../steeper";
 
 const formSchema = registerSchema.pick({
   cpf: true,
@@ -92,6 +93,11 @@ export const PersonalDataForm = () => {
   return (
     <Card className="w-full lg:w-[30rem]">
       <CardHeader>
+
+          <div className="w-full flex items-center justify-center mb-5">
+            <Stepper activeStep={2}/>
+          </div>
+
         <CardTitle>Informe os dados pessoais</CardTitle>
         <CardDescription>Preencha todos os campos obrigatórios</CardDescription>
       </CardHeader>

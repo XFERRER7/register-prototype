@@ -27,6 +27,8 @@ import { toast } from "@/hooks/use-toast"
 import { registerSchema } from "@/utils/schema"
 import { useRegisterStore } from "@/store"
 import { useRouter } from "next/navigation"
+import { api } from "@/lib/api"
+import { brStates } from '@/utils/br-states'
 
 const formSchema = registerSchema.pick({
   email: true,
@@ -59,17 +61,15 @@ export const AccessDataForm = () => {
   const [isShowingConfirmPassword, setIsShowingConfirmPassword] = useState(false)
 
   const setData = useRegisterStore(state => state.setData)
+  const clearData = useRegisterStore(state => state.clearData)
+
   const {
     cep,
     city,
     complement,
-    confirmEmail,
-    confirmPassword,
     cpf,
-    email,
     fullName,
     number,
-    password,
     phone,
     state,
     street
@@ -83,32 +83,44 @@ export const AccessDataForm = () => {
 
   async function onSubmit(data: TFormSchemaType) {
 
-    setData(data);
+    try {
 
-    const body = {
-      cep,
-      city,
-      complement,
-      confirmEmail: data.confirmEmail,
-      confirmPassword: data.confirmPassword,
-      cpf,
-      email: data.email,
-      fullName,
-      number,
-      password: data.password,
-      phone,
-      state,
-      street
+      setData(data);
+
+      const body = {
+        cep: cep?.replace(/\D/g, ""),
+        city,
+        complement,
+        confirmEmail: data.confirmEmail,
+        confirmPassword: data.confirmPassword,
+        cpf: cpf?.replace(/\D/g, ""),
+        email: data.email,
+        fullName,
+        number,
+        password: data.password,
+        phone: phone?.replace(/\D/g, ""),
+        state: brStates.find(brState => brState.value === state)?.label,
+        street
+      }
+
+      const response = await api.post("/users", body)
+
+      if (response.status === 201) {
+
+        toast({
+          title: "Usuário cadastrado com sucesso",
+        })
+
+        clearData()
+
+      }
+
+    } catch (error: any) {
+      toast({
+        title: error.response.data.message,
+        variant: 'destructive'
+      })
     }
-
-    toast({
-      title: "Você enviou os seguintes dados",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(body, null, 2)}</code>
-        </pre>
-      ),
-    })
 
   }
 
@@ -118,8 +130,8 @@ export const AccessDataForm = () => {
     if (!fullName || !cpf || !phone) {
       router.push("/personal-data");
     }
-    
-    if(!cep || !street || !number || !city || !state) {
+
+    if (!cep || !street || !number || !city || !state) {
       router.push("/address-data");
     }
 
