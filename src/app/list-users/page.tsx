@@ -11,7 +11,7 @@ export default function Page() {
 
   async function getUsers() {
     try {
-      
+
       const response = await api.get<IUser[]>('/users')
 
       setData(response.data)
@@ -26,13 +26,15 @@ export default function Page() {
   }, [])
 
   return (
-    <div className="flex flex-col items-center gap-5">
+    <div className="flex flex-col items-center justify-center gap-5 px-5 w-full">
 
       <h2 className="text-xl font-bold text-center">
         Lista de assistidos
       </h2>
 
-      <DataTable columns={userColumns} data={data} />
+      <div className="w-full">
+        <DataTable columns={userColumns} data={data} />
+      </div>
     </div>
   )
 }

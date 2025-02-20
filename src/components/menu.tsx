@@ -34,7 +34,7 @@ export function Menu() {
     <NavigationMenu>
       <NavigationMenuList>
       <NavigationMenuItem>
-          <NavigationMenuTrigger>Menu</NavigationMenuTrigger>
+          <NavigationMenuTrigger className="border">Menu</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
               {components.map((component) => (
@@ -42,7 +42,7 @@ export function Menu() {
                   key={component.title}
                   title={component.title}
                   href={component.href}
-                  className=" bg-slate-200"
+                  className=" bg-slate-100"
                 >
                   {component.description}
                 </ListItem>

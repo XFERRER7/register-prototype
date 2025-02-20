@@ -95,7 +95,7 @@ export const PersonalDataForm = () => {
       <CardHeader>
 
           <div className="w-full flex items-center justify-center mb-5">
-            <Stepper activeStep={2}/>
+            <Stepper />
           </div>
 
         <CardTitle>Informe os dados pessoais</CardTitle>

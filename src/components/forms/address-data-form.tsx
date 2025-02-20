@@ -43,6 +43,7 @@ import { toast } from "@/hooks/use-toast";
 import { registerSchema } from "@/utils/schema";
 import { useRouter } from "next/navigation";
 import { useRegisterStore } from "@/store";
+import Stepper from "../steeper";
 
 const formSchema = registerSchema.pick({
   cep: true,
@@ -141,12 +142,15 @@ export const AddressDataForm = () => {
     if (!fullName || !cpf || !phone) {
       router.push("/personal-data");
     }
-    
+
   }, [useRegisterStore.persist.hasHydrated, fullName, cpf, phone, router])
 
   return (
     <Card className="w-full lg:w-[30rem]">
       <CardHeader>
+        <div className="w-full flex items-center justify-center mb-5">
+          <Stepper />
+        </div>
         <CardTitle>Informe o seu endereço</CardTitle>
         <CardDescription>Preencha todos os campos obrigatórios</CardDescription>
       </CardHeader>
@@ -198,6 +202,7 @@ export const AddressDataForm = () => {
                     <FormControl>
                       <Input
                         placeholder="Ex: 1111"
+                        maxLength={5}
                         {...field} />
                     </FormControl>
                     <FormMessage />
@@ -214,6 +219,7 @@ export const AddressDataForm = () => {
                     <FormControl>
                       <Input
                         placeholder="Digite o complemento"
+                        maxLength={50}
                         {...field} />
                     </FormControl>
                     <FormMessage />
@@ -291,6 +297,7 @@ export const AddressDataForm = () => {
                     <FormControl>
                       <Input
                         placeholder="Digite a cidade"
+                        maxLength={50}
                         {...field} />
                     </FormControl>
                     <FormMessage />

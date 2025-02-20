@@ -66,18 +66,18 @@ export function DataTable<TData, TValue>({
   })
 
   return (
-    <div className="lg:w-[60rem] w-full">
-      <div className="flex items-center justify-between py-4">
+    <div className="max-w-[1200px] mx-auto">
+      <div className="flex md:flex-row flex-col-reverse items-center justify-between py-4 gap-3">
         <Input
           placeholder="Pesquise por nome"
           value={(table.getColumn("Nome")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("Nome")?.setFilterValue(event.target.value)
           }
-          className="w-64"
+          className="md:w-64 w-full"
         />
-        <Link href="/personal-data">
-          <Button>
+        <Link href="/personal-data" className="md:w-44 w-full bg-blue-300">
+          <Button className="md:w-44 w-full">
             Cadastrar novo
             <PlusCircle />
           </Button>
@@ -135,7 +135,7 @@ export function DataTable<TData, TValue>({
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
+          {table.getFilteredSelectedRowModel().rows.length} de{" "}
           {table.getFilteredRowModel().rows.length} linha(s) selecionada(s)
         </div>
         <div className="space-x-2">

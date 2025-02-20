@@ -1,11 +1,8 @@
+import { useRegisterStore } from "@/store";
 import { KeyRound, MapPinHouse, User } from "lucide-react";
 import { useState } from "react";
 
-interface IProps {
-  activeStep: number;
-}
-
-export default function Stepper({ activeStep }: IProps) {
+export default function Stepper() {
 
   const steps = [
     { id: 1, title: "Dados Pessoais" },
@@ -13,25 +10,40 @@ export default function Stepper({ activeStep }: IProps) {
     { id: 3, title: "Dados de Acesso" },
   ];
 
-  let currentStepClassName = "text-blue-600 dark:text-blue-500 dark:after:border-blue-800 after:border-blue-100";
+   const {
+      cep,
+      city,
+      complement,
+      cpf,
+      fullName,
+      number,
+      phone,
+      state,
+      street
+    } = useRegisterStore(state => state)
+
+  const step1IsComplete = fullName && cpf && phone;
+  const step2IsComplete = cep && city && complement && number && state && street;
+
+  let currentStepClassName = "text-green-600 dark:text-green-500 dark:after:border-green-800 after:border-green-100";
 
   return (
     <ol className="flex justify-center items-center w-full">
 
-      <li className={`flex w-full items-center after:content-[''] after:w-full after:h-1 after:border-b  after:border-4 after:inline-block ${activeStep === 1 ? currentStepClassName : "after:border-gray-100"}`}>
-        <span className={`flex items-center justify-center w-10 h-10 ${activeStep === 1 ? 'bg-blue-100' : 'bg-gray-100'} rounded-full lg:h-12 lg:w-12  shrink-0`}>
+      <li className={`flex w-full items-center after:content-[''] after:w-full after:h-1 after:border-b  after:border-4 after:inline-block ${step1IsComplete ? currentStepClassName : "after:border-gray-100"}`}>
+        <span className={`flex items-center justify-center w-10 h-10 ${step1IsComplete ? 'bg-green-100' : 'bg-gray-100'} rounded-full lg:h-12 lg:w-12  shrink-0`}>
           <User />
         </span>
       </li>
 
-      <li className={`flex w-full items-center after:content-[''] after:w-full after:h-1 after:border-b  after:border-4 after:inline-block ${activeStep === 2 ? currentStepClassName : "after:border-gray-100"}`}>
-        <span className={`flex items-center justify-center w-10 h-10 ${activeStep === 2 ? 'bg-blue-100' : 'bg-gray-100'} rounded-full lg:h-12 lg:w-12  shrink-0`}>
+      <li className={`flex w-full items-center after:content-[''] after:w-full after:h-1 after:border-b  after:border-4 after:inline-block ${step2IsComplete ? currentStepClassName : "after:border-gray-100"}`}>
+        <span className={`flex items-center justify-center w-10 h-10 ${step2IsComplete ? 'bg-green-100' : 'bg-gray-100'} rounded-full lg:h-12 lg:w-12  shrink-0`}>
         <MapPinHouse />
         </span>
       </li>
       
-      <li className={`flex items-center ${activeStep === 3 ? currentStepClassName : "after:border-gray-100"}`}>
-        <span className={`flex items-center justify-center w-10 h-10 rounded-full lg:h-12 lg:w-12 dark:bg-gray-700 ${activeStep === 3 ? 'bg-blue-100' : 'bg-gray-100'}`}>
+      <li className={`flex items-center after:border-gray-100}`}>
+        <span className={`flex items-center justify-center w-10 h-10 rounded-full lg:h-12 lg:w-12 dark:bg-gray-700 bg-gray-100`}>
           <KeyRound />
         </span>
       </li>

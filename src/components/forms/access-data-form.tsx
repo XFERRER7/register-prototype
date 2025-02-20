@@ -29,6 +29,7 @@ import { useRegisterStore } from "@/store"
 import { useRouter } from "next/navigation"
 import { api } from "@/lib/api"
 import { brStates } from '@/utils/br-states'
+import Stepper from "../steeper"
 
 const formSchema = registerSchema.pick({
   email: true,
@@ -116,12 +117,18 @@ export const AccessDataForm = () => {
       }
 
     } catch (error: any) {
-      toast({
-        title: error.response.data.message,
-        variant: 'destructive'
-      })
+      if (error.response?.data.message) {
+        toast({
+          title: error.response.data.message,
+          variant: 'destructive'
+        })
+      } else {
+        toast({
+          title: "Erro ao cadastrar usuário",
+          variant: 'destructive'
+        })
+      }
     }
-
   }
 
   useEffect(() => {
@@ -140,6 +147,9 @@ export const AccessDataForm = () => {
   return (
     <Card className="w-full lg:w-[30rem]">
       <CardHeader>
+        <div className="w-full flex items-center justify-center mb-5">
+          <Stepper />
+        </div>
         <CardTitle>Informe os dados de acesso</CardTitle>
         <CardDescription>Preencha todos os campos obrigatórios</CardDescription>
       </CardHeader>
@@ -158,6 +168,7 @@ export const AccessDataForm = () => {
                     <FormControl>
                       <Input
                         type="email"
+                        maxLength={100}
                         placeholder="Digite seu e-mail"
                         {...field} />
                     </FormControl>
@@ -176,6 +187,7 @@ export const AccessDataForm = () => {
                     <FormControl>
                       <Input
                         type="email"
+                        maxLength={100}
                         placeholder="Confirme seu e-mail"
                         {...field} />
                     </FormControl>
@@ -194,6 +206,7 @@ export const AccessDataForm = () => {
                       <div className="relative">
                         <Input
                           type={isShowingPassword ? "text" : "password"}
+                          maxLength={50}
                           placeholder="Digite sua senha"
                           {...field} />
                         {
@@ -219,6 +232,7 @@ export const AccessDataForm = () => {
                       <div className="relative">
                         <Input
                           type={isShowingConfirmPassword ? "text" : "password"}
+                          maxLength={50}
                           placeholder="Confirme sua senha"
                           {...field} />
                         {
